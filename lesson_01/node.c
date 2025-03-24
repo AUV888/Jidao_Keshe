@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
 
 // Enter -1 to end input
 struct node
@@ -15,6 +16,7 @@ void insert_node(NODEPTR previous, NODEPTR *head); // Send the address of the po
 void output_node_list(NODEPTR head);
 void delete_node(NODEPTR previous, NODEPTR *head);
 NODEPTR get_node(int n, NODEPTR head); // Counting from 0,1...
+void destroy(NODEPTR head);
 
 int main(void)
 {
@@ -23,7 +25,7 @@ int main(void)
     printf("original node list:\n");
     output_node_list(hd);
     // printf("---\n%d\n",get_node(2,hd)->data);
-    printf("\ninsert at no.:");
+    printf("\ninsert after no.:");
     int tmp;
     scanf("%d", &tmp);
     insert_node(get_node(tmp - 1, hd), &hd);
@@ -31,10 +33,10 @@ int main(void)
     output_node_list(hd);
     printf("\ndelete no.:");
     scanf("%d", &tmp);
-    delete_node(get_node(tmp - 1, hd), &hd);
+    delete_node(get_node(tmp - 2, hd), &hd);
     printf("\n-----after delete\n");
     output_node_list(hd);
-    free(hd);
+    destroy(hd);
     return 0;
 }
 
@@ -45,7 +47,7 @@ NODEPTR create_node(void)
     scanf("%d", &num);
     while (num != -1)
     {
-        currentptr = malloc(sizeof(NODE));
+        currentptr = (NODEPTR)malloc(sizeof(NODE));
         currentptr->data = num;
         if (headptr == NULL) // It is the head of node
         {
@@ -66,7 +68,7 @@ NODEPTR create_node(void)
 
 void insert_node(NODEPTR previous, NODEPTR *head) // Send the address of the pointer head
 {
-    NODEPTR newptr = malloc(sizeof(NODE));
+    NODEPTR newptr = (NODEPTR)malloc(sizeof(NODE));
     scanf("%d", &newptr->data);
     if (previous == NULL) // Insert the node at the first place
     {
@@ -105,6 +107,10 @@ void output_node_list(NODEPTR head)
 NODEPTR get_node(int n, NODEPTR head) // counting from 0,1...
 {
     int cnt = 0;
+    if (n < 0)
+    {
+        return NULL;
+    }
     NODEPTR current = head;
     while (cnt < n)
     {
@@ -117,7 +123,9 @@ void delete_node(NODEPTR previous, NODEPTR *head)
 {
     if (previous == NULL) // Delete the first node
     {
-        *head = (*head)->next;
+        NODEPTR temp=(*head)->next;//
+        *head = temp;
+        free(temp);//
     }
     else if (previous->next == NULL)
     {
@@ -126,6 +134,19 @@ void delete_node(NODEPTR previous, NODEPTR *head)
     else
     {
         NODEPTR temp = previous->next->next;
+        free(previous->next);//
         previous->next = temp;
     }
+}
+
+void destroy(NODEPTR head)
+{
+    NODEPTR tmp;
+    while (head != NULL)
+    {
+        tmp = head;
+        head = head->next;
+        free(tmp);
+    }
+    return;
 }
