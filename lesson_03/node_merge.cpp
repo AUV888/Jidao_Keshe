@@ -3,129 +3,15 @@
 using namespace std;
 
 // Enter -1 to end input
-//Merge the node list
-struct NODE
+// Merge the node list
+// The nodelist 1 and 2 must be ascending
+struct NODELIST
 {
     int data;
-    struct NODE *next;
+    struct NODELIST *next;
 };
-typedef struct NODE node;
-typedef struct NODE *nodeptr;
-
-nodeptr create_node(void);
-void insert_node(nodeptr previous, nodeptr *head); // Send the address of the pointer head
-void output_node_list(nodeptr head);
-void delete_node(nodeptr previous, nodeptr *head);
-nodeptr get_node(int n, nodeptr head); // Counting from 0,1...
-void destroy(nodeptr head);
-
-int main(void)
-{
-    nodeptr hd1=create_node(),hd2=create_node();
-    
-    destroy(hd1);
-    destroy(hd2);
-    return 0;
-}
-
-nodeptr create_node(void)
-{
-    nodeptr currentptr = NULL, headptr = NULL, lastptr = NULL;
-    int num;
-    scanf("%d", &num);
-    while (num != -1)
-    {
-        currentptr = (nodeptr)malloc(sizeof(NODE));
-        currentptr->data = num;
-        if (headptr == NULL) // It is the head of node
-        {
-            headptr = currentptr;
-            lastptr = currentptr;
-            currentptr->next = NULL;
-        }
-        else // In the middle of node
-        {
-            lastptr->next = currentptr;
-            lastptr = currentptr;
-            currentptr->next = NULL;
-        }
-        scanf("%d", &num);
-    }
-    return headptr;
-}
-
-void insert_node(nodeptr previous, nodeptr *head) // Send the address of the pointer head
-{
-    nodeptr newptr = (nodeptr)malloc(sizeof(NODE));
-    scanf("%d", &newptr->data);
-    if (previous == NULL) // Insert the node at the first place
-    {
-        nodeptr current = *head;
-        *head = newptr;
-        newptr->next = current;
-    }
-    else if (previous->next == NULL) // Insert the node at the last place
-    {
-        previous->next = newptr;
-        newptr->next = NULL;
-    }
-    else // In the middle of node
-    {
-        nodeptr current = previous->next;
-        previous->next = newptr;
-        newptr->next = current;
-    }
-    return;
-}
-void output_node_list(nodeptr head)
-{
-    if (head == NULL)
-    {
-        printf("Empty Node List\n");
-        return;
-    }
-    nodeptr current = head;
-    while (current != NULL)
-    {
-        printf("%d\t", current->data);
-        current = current->next;
-    }
-    return;
-}
-nodeptr get_node(int n, nodeptr head) // counting from 0,1...
-{
-    int cnt = 0;
-    if (n < 0)
-    {
-        return NULL;
-    }
-    nodeptr current = head;
-    while (cnt < n)
-    {
-        current = current->next;
-        cnt++;
-    }
-    return current;
-}
-void delete_node(nodeptr previous, nodeptr *head)
-{
-    if (previous == NULL) // Delete the first node
-    {
-        nodeptr temp=(*head)->next;//
-        *head = temp;
-        free(temp);//
-    }
-    else if (previous->next == NULL)
-    {
-        return;
-    }
-    else
-    {
-        nodeptr temp = previous->next->next;
-        free(previous->next);//
-        previous->next = temp;
-    }
-}
+typedef struct NODELIST node;
+typedef struct NODELIST *nodeptr;
 
 void destroy(nodeptr head)
 {
@@ -137,4 +23,81 @@ void destroy(nodeptr head)
         free(tmp);
     }
     return;
+}
+
+void create(nodeptr *headp, nodeptr *lastp)
+{
+    int num;
+    cin >> num;
+    while (num != -1)
+    {
+        nodeptr current = (nodeptr)malloc(sizeof(node));
+        current->data = num;
+        if ((*headp) == NULL) // at head
+        {
+            (*headp) = current;
+            (*lastp) = current;
+            current->next = NULL;
+        }
+        else // other
+        {
+            (*lastp)->next = current;
+            current->next = NULL;
+            *lastp = current;
+        }
+        cin >> num;
+    }
+    return;
+}
+
+void output(nodeptr head)
+{
+    if (head == NULL)
+    {
+        cout << "EMPTY NODE LIST\n";
+        return;
+    }
+    nodeptr cur = head;
+    while (cur != NULL)
+    {
+        cout << cur->data << " ";
+        cur = cur->next;
+    }
+    cout << "\n";
+    return;
+}
+
+// h1 will point to the new head of the merged nodelist
+// while h2 will be a NULL pointer
+void merge(nodeptr *h1, nodeptr *h2, nodeptr *l1, nodeptr *l2)
+{
+    /*
+     nodeptr cur1 = *h1, cur2 = *h2;
+     if (*h1 == NULL || *h2 == NULL)
+     {
+         cout << "CANNOT MERGE EMPTY NODELIST\n";
+         return;
+     }
+     else if (cur2->data < cur1->data)
+     {
+         nodeptr tmp = cur2->next;
+         *h1 = cur2;
+         cur2->next = cur1;
+         cur2 = tmp;
+     }
+     */
+    //写不出来,不写了！！！
+    return;
+}
+
+int main(void)
+{
+    nodeptr head1 = NULL, last1 = NULL, head2 = NULL, last2 = NULL;
+    create(&head1, &last1); // must be ascending
+    create(&head2, &last2); // must be ascending
+    merge(&head1, &head2, &last1, &last2);
+    output(head1);
+    destroy(head1);
+    destroy(head2);
+    return 0;
 }
