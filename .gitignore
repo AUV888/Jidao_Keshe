@@ -1,3 +1,4 @@
 *.exe
 
 tetris_CLI/*.*
+tetris_CLI/*
