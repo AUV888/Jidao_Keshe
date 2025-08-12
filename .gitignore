@@ -2,3 +2,6 @@
 
 tetris_CLI/*.*
 tetris_CLI/*
+.gitignore
+oj_practice/practice02
+/tetris_CLIv2
